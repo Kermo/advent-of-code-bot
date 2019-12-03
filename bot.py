@@ -6,7 +6,7 @@ from datetime import timezone
 
 def load_json_data():
     url = "https://adventofcode.com/2019/leaderboard/private/view/21796.json"
-    session_id = "53616c7465645f5ff1385fd71f5e21ee34318254e8084f9322104e5fc2de36ec6e9e75141fc61f7bc177c2872a7acdd1"
+    session_id = ""
     cookie = {"session": session_id}
 
     post_response = requests.post(url, cookies=cookie)
@@ -16,10 +16,11 @@ def load_json_data():
 
 
 def send_slack_msg(name, challenge, part, stars, points):
-    webhook_url = ""
-    msg = "{} solved puzzle {} part {} and has now {} :star: and {} points. Congratulations!".format(name, challenge, part, stars, points)
+    real_webhook_url = ""
+    own_webhook_url = ""
+    msg = "{} solved day {} part {} and has now {} :star: and {} points. Congratulations!".format(name, challenge, part, stars, points)
     payload = '{"text" : "' + msg + '"}'
-    req = requests.Request(webhook_url, headers={"Content-Type":"application/x-www-form-urlencoded"}, data=payload.encode('utf-8'))
+    req = requests.post(own_webhook_url, headers={"Content-Type":"application/x-www-form-urlencoded"}, data=payload.encode('utf-8'))
 
 
 
@@ -35,7 +36,7 @@ def find_newest_completion():
         dt = datetime.datetime.now()
         last_star_ts = member_object["last_star_ts"]
 
-        if dt.replace(tzinfo=timezone.utc).timestamp() - int(last_star_ts) < 61:
+        if dt.timestamp() - int(last_star_ts) < 61:
 
             for challenges in member_object["completion_day_level"]:
                 challenge_days = member_object["completion_day_level"][challenges]
