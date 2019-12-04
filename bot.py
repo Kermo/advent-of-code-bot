@@ -36,7 +36,7 @@ def find_newest_completion():
         dt = datetime.datetime.now()
         last_star_ts = member_object["last_star_ts"]
 
-        if dt.timestamp() - int(last_star_ts) < 61:
+        if dt.timestamp() - int(last_star_ts) < 900: # check last 15 minute interval
 
             for challenges in member_object["completion_day_level"]:
                 challenge_days = member_object["completion_day_level"][challenges]
